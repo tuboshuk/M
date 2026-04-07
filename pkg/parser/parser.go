@@ -85,8 +85,6 @@ func (p *ProtocolParser) parseSMB(grabResult *banner.GrabResult, banner models.S
 
 // parseSSH 解析 SSH Banner
 func (p *ProtocolParser) parseSSH(grabResult *banner.GrabResult, banner models.ServiceBanner) models.ServiceBanner {
-	banner.Service = "ssh"
-	
 	if version, ok := grabResult.Extra["version"]; ok {
 		banner.Name = "SSH-" + version
 	}
@@ -102,8 +100,6 @@ func (p *ProtocolParser) parseSSH(grabResult *banner.GrabResult, banner models.S
 
 // parseFTP 解析 FTP Banner
 func (p *ProtocolParser) parseFTP(grabResult *banner.GrabResult, banner models.ServiceBanner) models.ServiceBanner {
-	banner.Service = "ftp"
-	
 	if bannerStr, ok := grabResult.Extra["banner"]; ok {
 		banner.Name = bannerStr
 	}
@@ -113,8 +109,6 @@ func (p *ProtocolParser) parseFTP(grabResult *banner.GrabResult, banner models.S
 
 // parseAFP 解析 AFP Banner
 func (p *ProtocolParser) parseAFP(grabResult *banner.GrabResult, banner models.ServiceBanner) models.ServiceBanner {
-	banner.Service = "afpovertcp"
-	
 	// AFP 协议解析需要更深入的数据包分析
 	// 这里做简化处理
 	banner.Name = "AFP Server"
@@ -124,8 +118,6 @@ func (p *ProtocolParser) parseAFP(grabResult *banner.GrabResult, banner models.S
 
 // parseGeneric 解析通用 Banner
 func (p *ProtocolParser) parseGeneric(grabResult *banner.GrabResult, banner models.ServiceBanner) models.ServiceBanner {
-	banner.Service = grabResult.Protocol
-	
 	// 尝试从原始 Banner 中提取信息
 	lines := strings.Split(grabResult.RawData, "\n")
 	if len(lines) > 0 {
@@ -203,18 +195,14 @@ func (p *ProtocolParser) enrichFromMDNS(banner models.ServiceBanner, mdnsData ma
 
 // ParseWorkstation 解析 Workstation 服务
 func (p *ProtocolParser) ParseWorkstation(mdnsData map[string][]string) models.ServiceBanner {
-	banner := models.ServiceBanner{
-		Service: "workstation",
-	}
+	banner := models.ServiceBanner{}
 
 	return p.enrichFromMDNS(banner, mdnsData)
 }
 
 // ParseDevice 解析 Device-Info 服务
 func (p *ProtocolParser) ParseDevice(mdnsData map[string][]string) models.ServiceBanner {
-	banner := models.ServiceBanner{
-		Service: "device-info",
-	}
+	banner := models.ServiceBanner{}
 
 	// 从 TXT 记录提取设备信息
 	if txtRecords, ok := mdnsData["txt"]; ok {
@@ -240,9 +228,7 @@ func (p *ProtocolParser) ParseDevice(mdnsData map[string][]string) models.Servic
 
 // ParseQDiscover 解析 QDiscover 服务 (QNAP)
 func (p *ProtocolParser) ParseQDiscover(mdnsData map[string][]string) models.ServiceBanner {
-	banner := models.ServiceBanner{
-		Service: "qdiscover",
-	}
+	banner := models.ServiceBanner{}
 
 	// 解析 QNAP 特定的 TXT 记录
 	if txtRecords, ok := mdnsData["txt"]; ok {

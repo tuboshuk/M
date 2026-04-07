@@ -202,7 +202,7 @@ func (p *Probe) sendQuery(ip string, m *dns.Msg) (*dns.Msg, error) {
 	// 发送查询到mDNS端口
 	response, _, err := client.Exchange(m, fmt.Sprintf("%s:5353", ip))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("mDNS查询失败: %v", err)
 	}
 
 	return response, nil

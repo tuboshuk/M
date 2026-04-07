@@ -167,7 +167,10 @@ func runScan(cmd *cobra.Command, args []string) error {
 			}
 
 			// 抓取 Banner
-			grabResult := grabber.Grab(ctx, scanResult.IP, port)
+			grabResult, err := grabber.Grab(ctx, scanResult.IP, port)
+			if err != nil && cfgVerbose {
+				output.PrintError(os.Stdout, "Banner grab failed for %s:%d: %v", scanResult.IP, port, err)
+			}
 
 			// 确定服务类型
 			serviceType := getServiceType(port, mdnsData)

@@ -33,9 +33,14 @@ func (g *Grabber) Grab(ip string, port int) (*Banner, error) {
 	// 建立TCP连接
 	conn, err := net.DialTimeout("tcp", addr, g.Timeout)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("连接失败: %v", err)
 	}
-	defer conn.Close()
+	defer func() {
+		// 安全关闭连接
+		if conn != nil {
+			conn.Close()
+		}
+	}()
 
 	// 设置读取超时
 	conn.SetReadDeadline(time.Now().Add(g.Timeout))
